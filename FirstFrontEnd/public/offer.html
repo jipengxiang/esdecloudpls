@@ -1,0 +1,213 @@
+
+
+<!doctype html>
+<html lang="en">
+
+<head>
+
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Offer · Snapsell</title>
+
+
+  <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/sign-in/">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="css/product.css" rel="stylesheet" type="text/css">
+  <link href="https://getbootstrap.com/docs/4.4/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+  <style>
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+  </style>
+
+
+</head>
+
+
+<body class="text-center">
+
+
+  <script>
+
+
+    var urlParams = new URLSearchParams(window.location.search)
+
+    if (urlParams.has('listingid')) {
+      var listingid = urlParams.get('listingid')
+    }
+    
+    var userData = localStorage.getItem('userInfo')
+    console.log(userData)
+    var userDataJson = JSON.parse(userData)
+    var userid = userDataJson[0].id
+
+    $(document).ready(function () {
+
+      $.ajax({
+        url: "http://ec2-54-90-35-86.compute-1.amazonaws.com:8081/listings/" + listingid + "/",
+        type: "GET",
+        contentType: "application/json",
+        datatype: "json",
+        success: function (data, textStatus, xhr) {
+          if (data != null) {
+            var postsHtml = ""
+            postsHtml += 
+                        `
+                        <div class="card" style="margin-top: 2rem;">
+                        <div class="card-body">
+                        <p class="card-text">Title: ${data[0].title}</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                        Description: ${data[0].description}
+                        </div>
+                        <div class="card-footer text-muted">
+                        Price: ${data[0].price}
+                        </div>
+                        </div>
+                        `
+            $('#posts').html(postsHtml)
+            // POST --> Adds an offer for that listing. A user can send more than one offer for the same listing.
+            $('#offers2').click(function () {
+              event.preventDefault()
+              var offer = $('#offer').val()
+              console.log("Offer:" + offer);
+              var body = `{"offer":"${offer}", "fk_offeror_id":"${userid}", "fk_listing_id":"${listingid}"}`
+              console.log(body)
+              $.ajax({
+                url: 'http://ec2-54-90-35-86.compute-1.amazonaws.com:8081/listings/' + listingid + '/offers/',
+                type: 'POST',
+                data: body,
+                contentType: "application/json",
+                datatype: "json",
+                success: function (data, textStatus, xhr) {
+
+                  if (data != null) {
+                    window.alert("offer is made");
+                    window.location.assign("http://ec2-54-90-35-86.compute-1.amazonaws.com:3001/home.html")
+                  } else {
+                    window.alert('Error')
+                  }
+                },
+                error: function (xhr, textStatus, err) {
+                  console.log(err)
+                  window.alert('Error')
+                }
+              });
+            });
+          } else {
+            console.log('Error')
+          }
+        },
+        error: function (xhr, textStatus, err) {
+          console.log(err)
+          window.alert('Error')
+        }
+      });
+    });
+
+
+  </script>
+
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="profile.html">Profile<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="home.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="search.html">Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/product.html">Add/Sell Product</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+
+  <div class="container">
+
+
+    <form class="form-signin">
+      <h1 class="h3 mb-3 font-weight-normal">Making Offer</h1>
+      <div id="posts">
+        <div class="card" style="margin-top: 2rem;">
+          <div class="card-body">
+            <p class="card-text">Title</p>
+          </div>
+          <div class="card-footer text-muted">
+            Description
+          </div>
+          <div class="card-footer text-muted">
+            Price
+          </div>
+        </div>
+      </div>
+      <input type="offer" id="offer" class="form-control" placeholder="offer" required autofocus>
+      <button class="btn btn-lg btn-primary btn-block" type="submit" id="offers2">Offer</button>
+    </form>
+  </div>
+
+
+</body>
+
+
+<!-- Footer -->
+<footer>
+  
+
+  <div class="col-lg-12">
+    <h6>CONNECT WITH US</h6>
+
+    <!-- Social Media Icons -->
+    <div class="media">
+      <div class="col-lg-12">
+        <a href="#"><i class="fa fa-facebook-square"></i></a>
+        <a href="#"><i class="fa fa-instagram"></i></a>
+        <a href="#"><i class="fa fa-twitter-square"></i></a>
+        <a href="#"><i class="fa fa-google-plus-square"></i></a>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <p>&copy 2020 All Rights Reserved.</p>
+
+      <!-- Scroll Up Button -->
+      <a class="gotopbtn" href="#"><i class="fa fa-chevron-up"></i></a>
+    </div>
+  </div>
+
+
+</footer>
+
+
+</html>

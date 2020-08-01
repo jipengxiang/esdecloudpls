@@ -1,0 +1,93 @@
+/* Name: Malcom Tan Yon Kiak
+Admin Number: P1936083
+Class: DIT/FT/1B/12 */
+
+html,
+body {
+  height: 100%;
+  background-image: linear-gradient(to right, rgba(240,248,255), rgba(135,206,250));
+}
+
+
+body > .container {
+  -ms-flex-align: center;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+
+
+.form-signin .checkbox {
+  font-weight: 400;
+}
+
+
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+
+
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+
+/* ------ Footer ------ */
+
+
+footer {
+  background: #3379FF;
+  padding: 20px 20px 20px 40px;
+  text-align: center;
+}
+
+
+.copyright > p {
+  color: #ffffff;
+}
+
+
+h6 {
+  color: #ffffff;
+}
+
+
+i {
+  color: #ffffff;
+}
+
+
+i:hover {
+  color: rgb(211, 211, 211);
+}
+
+
+html {
+  scroll-behavior: smooth;
+}

@@ -1,0 +1,236 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ViewUsers</title>
+
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link href="css/home.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+
+</head>
+
+
+<body>
+
+
+  <!-- Nav Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="profile.html">Profile<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="home.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="search.html">Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/product.html">Add/Sell Product</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+
+  <div class="container">
+
+    <div style="margin-top: 2rem;">
+      <h1>All Listing</h1>
+
+      <form id="create-post-form" style="margin-top: 2rem;">
+        <div class="form-group">
+          <input type="text" name="searcharea" id="searcharea" placeholder="Search for listing" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary" id="Search">Search</button>
+      </form>
+
+      <div id="posts">
+        <div class="card" style="margin-top: 2rem;">
+          <div class="card-body">
+            <p class="card-text">Title</p>
+          </div>
+          <img src="../images/iphone11.jpg" class="img-rounded" alt="Cinque Terre" width="304" height="236">
+          <div class="card-footer text-muted">
+            Description
+          </div>
+          <div class="card-footer text-muted">
+            Price
+          </div>
+          <div class="card-footer text-muted">
+            <a href="http://ec2-54-90-35-86.compute-1.amazonaws.com:3001/offer.html?listingid=1" class="btn btn-primary" class="Offer">Offer</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p></p>
+  </div>
+
+
+  <script>
+
+
+    var userData = localStorage.getItem('userInfo')
+    console.log(userData)
+    var userDataJson = JSON.parse(userData)
+    console.log(userDataJson)
+    var userid = userDataJson[0].id
+    console.log(userid)
+    var token = localStorage.getItem('token')
+
+    // GET -->	View all listed products 
+    $.ajax({
+      url: "http://ec2-54-90-35-86.compute-1.amazonaws.com:8081/listings/",
+      type: "GET",
+      contentType: "application/json",
+      dataType: "json",
+      success: function (data, textStatus, xhr) {
+        console.log(data);
+        if (data != null) {
+
+          var postsHtml = ""
+
+          for (var i = 0; i < data.length; i++) {
+            if (userid != data[i].fk_poster_id) {
+              postsHtml +=
+                `
+                          <div class="card" style="margin-top: 2rem;">
+                          <div class="card-body">
+                          <p class="card-text">${data[i].title}</p>
+                          </div>
+                          <img src="../images/${data[i].image}" class="img-rounded" alt="Cinque Terre" width="304" height="236">
+                          <div class="card-footer text-muted">
+                            ${data[i].description}
+                          </div>
+                          <div class="card-footer text-muted">
+                            ${data[i].price}
+                          </div>
+                          <div class="card-footer text-muted">
+                          <a href="http://ec2-54-90-35-86.compute-1.amazonaws.com:3001/offer.html?listingid=${data[i].id}" class="btn btn-primary" class="Offer">Offer</a>
+                          </div>
+                          `;
+            }
+          }
+          $('#posts').html(postsHtml);
+        } else {
+          console.log("Error in retrieving...");
+        }
+      }, error(xhr, textStatus, err) {
+        console.log(err);
+        window.alert("Error");
+      }
+    });
+
+    // GET --> Search functionality 
+    $(document).ready(function () {
+        $('#Search').click(function () {
+          var title = $("#searcharea").val();
+          console.log(title);
+
+          $.ajax({
+            // headers: { "authorization": "Bearer " + token },
+            url: "http://ec2-54-90-35-86.compute-1.amazonaws.com:8081/alllistings/" + title,
+            type: "GET",
+            // data:data,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data, textStatus, xhr) {
+
+
+              if (data != null) {
+                var searchHtml = ""
+
+                for (var i = 0; i < data.length; i++) {
+                  if (userid != data[i].fk_poster_id) {
+                    searchHtml += `
+                                <div class="card" style="margin-top: 2rem;">
+                                <div class="card-body">
+                                <p class="card-text">${data[i].title}</p>
+                                </div>
+                                <img src="../images/iphone11.jpg" class="img-rounded" alt="Cinque Terre" width="304" height="236">
+                                <div class="card-footer text-muted">
+                                  ${data[i].description}
+                                </div>
+                                <div class="card-footer text-muted">
+                                  ${data[i].price}
+                                </div>
+                                <a href="http://ec2-54-90-35-86.compute-1.amazonaws.com:3001/offer.html?listingid=${data[i].id}" class="btn btn-primary" class="Offer">Offer</a>
+
+                                `;
+                  }
+                }
+                $('#posts').html(searchHtml);
+              } else {
+                console.log("Error in retrieving...");
+              }
+            }, error(xhr, textStatus, err) {
+              console.log(err);
+              window.alert("Wrong Credentials!");
+            }
+
+          });
+          return false;
+        })
+      });
+
+
+  </script>
+
+
+</body>
+
+
+<!-- Footer -->
+<footer>
+
+
+  <div class="col-lg-12">
+    <h6>CONNECT WITH US</h6>
+
+    <!-- Social Media Icons -->
+    <div class="media">
+      <div class="col-lg-12">
+        <a href="#"><i class="fa fa-facebook-square"></i></a>
+        <a href="#"><i class="fa fa-instagram"></i></a>
+        <a href="#"><i class="fa fa-twitter-square"></i></a>
+        <a href="#"><i class="fa fa-google-plus-square"></i></a>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <p>&copy 2020 All Rights Reserved.</p>
+
+      <!-- Scroll Up Button -->
+      <a class="gotopbtn" href="#"><i class="fa fa-chevron-up"></i></a>
+    </div>
+  </div>
+
+
+</footer>
+
+
+</html>

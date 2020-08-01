@@ -1,0 +1,192 @@
+
+
+<!doctype html>
+<html lang="en">
+
+
+<head>
+
+
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <link href="css/profile.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://getbootstrap.com/docs/4.4/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+
+</head>
+
+
+<body>
+
+
+  <script>
+
+
+    $(document).ready(function () {
+      if (localStorage.getItem("token") === null) {
+        window.location.assign("http://ec2-54-90-35-86.compute-1.amazonaws.com:3001/login.html")
+      }
+
+      var userData = localStorage.getItem('userInfo')
+      console.log(userData)
+      var userDataJson = JSON.parse(userData)
+      console.log(userDataJson)
+      var userid = userDataJson[0].id
+      var username = userDataJson[0].username;
+      var token = localStorage.getItem('token')
+
+      $('#username').val(username);
+      $("#image").attr("src",userDataJson[0].profile_pic_url);
+
+      console.log(userDataJson[0].profile_pic_url);
+      // Update username
+      $('#Update').click(function () {
+        var username = $('#username').val();
+
+        var data = `{"username":"${username}"}`;
+
+        console.log(data)
+        $.ajax({
+          headers: { "authorization": "Bearer " + token },
+          url: "http://ec2-54-90-35-86.compute-1.amazonaws.com:8081/users/" + userid + "/",
+          type: "PUT",
+          data: data,
+          contentType: "application/json",
+          dataType: "json",
+          success: function (data, textStatus, xhr) {
+            console.log(data);
+            if (data != null && data.success) {
+
+              var data = `[{"username":"${username}"}]`;
+
+              localStorage.setItem("userInfo", data);
+              window.location.assign("http://ec2-54-90-35-86.compute-1.amazonaws.com:3001/home.html")
+            } else {
+              console.log(err);
+            }
+          }, error(xhr, textStatus, err) {
+            console.log(err);
+            window.alert("Error");
+          }
+        });
+        return false;
+      })
+
+      // POST --> Persistent login (and logout) 
+      $("#logout").click(function (event) {
+        event.preventDefault();
+
+        $.ajax({
+          url: "http://ec2-54-90-35-86.compute-1.amazonaws.com:8081/users/logout",
+          type: "POST",
+          dataType: "json",
+          success: function (data, textStatus, xhr) {
+            if (data != null && data.success) {
+              window.localStorage.clear();
+              window.location.assign("http://ec2-54-90-35-86.compute-1.amazonaws.com:3001/login.html");
+            } else {
+              console.log("Error when logging Out!...");
+            }
+          },
+          error: function (xhr, textStatus, errorThrown) {
+            console.log("Error when logging out...")
+          }
+        })
+      })
+    })
+
+
+  </script>
+
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="profile.html">Profile<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="home.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="search.html">Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/product.html">Add/Sell Product</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+
+  <div class="container emp-profile">
+    <form method="post">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="profile-img">
+            <img
+              src=""
+               id="image" alt="" />
+            
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="profile-head">
+            <h5>Your Profile</h5>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <input type="submit" class="profile-edit-btn" name="btnAddMore" id="logout" value="logout" />
+        </div>
+      </div>
+        <div class="col-md-8">
+          <div class="card">
+            <p class="username"> <label>Username: </label>
+              <input type="text" id="username"> </br></p>
+            <p><input type="button" id="Update" value="Update Profile" /></p>
+          </div>
+        </div>
+      </div>
+  </div>
+  </form>
+  </div>
+
+
+</body>
+
+
+<!-- Footer -->
+<footer>
+
+
+  <div class="col-lg-12">
+    <h6>CONNECT WITH US</h6>
+
+    <!-- Social Media Icons -->
+    <div class="media">
+      <div class="col-lg-12">
+        <a href="#"><i class="fa fa-facebook-square"></i></a>
+        <a href="#"><i class="fa fa-instagram"></i></a>
+        <a href="#"><i class="fa fa-twitter-square"></i></a>
+        <a href="#"><i class="fa fa-google-plus-square"></i></a>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <p>&copy 2020 All Rights Reserved.</p>
+
+      <!-- Scroll Up Button -->
+      <a class="gotopbtn" href="#"><i class="fa fa-chevron-up"></i></a>
+    </div>
+  </div>
+
+
+</footer>
+
+
+</html>

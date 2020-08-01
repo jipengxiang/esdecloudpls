@@ -1,0 +1,86 @@
+/* Name: Malcom Tan Yon Kiak
+Admin Number: P1936083
+Class: DIT/FT/1B/12 */
+
+body {
+  height: 100%;
+  background-image: linear-gradient(to right, rgba(240,248,255), rgba(135,206,250));
+}
+
+
+.box {
+  border-radius: 5px;
+  padding: 20px 10px 20px 10px;
+  /* background-color: rgb(235, 235, 235); */
+  background-image: linear-gradient(to right, rgba(240,248,255), rgba(135,206,250));
+  box-shadow: 3px 3px 3px;
+}
+
+
+.box > p {
+  padding: 10px 10px 30px 10px;
+}
+
+.box > h3, h4 {
+  font-family: 'Josefin Sans', sans-serif;
+  padding: 0px 20px 0px 20px;
+}
+
+
+/* ------ Button for Learn or Book ------- */
+
+
+.learn {
+  border-style: solid;
+  padding: 10px 0px 10px 0px;
+  border-radius: 5px;
+  text-align: center;
+  font-family: 'Merriweather', serif;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+
+.learn > a {
+  color: #000000;
+}
+
+
+.learn > a:hover {
+  color: rgb(128,128,128);
+}
+
+
+/* ------ Footer ------ */
+
+
+footer {
+  background: #3379FF;
+  padding: 20px 20px 20px 40px;
+  text-align: center;
+}
+
+
+.copyright > p {
+  color: #ffffff;
+}
+
+
+h6 {
+  color: #ffffff;
+}
+
+
+i {
+  color: #ffffff;
+}
+
+
+i:hover {
+  color: rgb(211, 211, 211);
+}
+
+
+html {
+  scroll-behavior: smooth;
+}
